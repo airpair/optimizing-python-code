@@ -112,7 +112,7 @@ We could continue decorating each level and viewing the results; instead let's
 try a different tool. There's an [interactive profiler][profiling] for Python
 that covers our needs a bit better.
 
-![](profiling-ncurses.png)
+![](https://raw.githubusercontent.com/airpair/optimizing-python-code/edit/profiling-ncurses.png)
 
 We can drill right down to see where the most time is being spent. A full _11
 percent_ of the time is being spent just getting the a connection. No network
@@ -155,14 +155,14 @@ With the option in place, let's see the difference between enabled and
 disabled.
 
 _With connection counting_
-![](with-connection-counter-profile.png)
+![](https://raw.githubusercontent.com/airpair/optimizing-python-code/edit/with-connection-counter-profile.png)
 
 We pay almost a full *second* of execution time over 1000 messages to count how
 many jobs come from each node in the cluster. If you're keeping score at home,
 that's a full millisecond per message.
 
 _Without connection counting_
-![](without-connection-counter-profile.png)
+![](https://raw.githubusercontent.com/airpair/optimizing-python-code/edit/without-connection-counter-profile.png)
 
 Without job source counting, the total runtime decreases from 3.87 to 2.88
 seconds. This is definitely worth a change to the library's default behavior.
