@@ -13,7 +13,7 @@ profiling and optimizing pure Python code with the help of a few tools. In this
 article, we'll see how to use profilers to improve [disq's][disq] performance
 by about a third.
 
-## Optimization -- The How and Why
+## Optimizating Python -- The How and Why
 
 Before we get down business, let's talk about optimization. Optimization
 *isn't* about flailing around tossing `@lru_cache` around all your functions.
@@ -47,7 +47,7 @@ benchmarked, profiling the client is still worthwhile. We'll follow the steps
 outlined earlier: verify, measure, alter, repeat. The "verify" step is already
 handled for this client, let's dive into the measuring.
 
-## Targeted Optimizations
+## Optimize Slow Code First
 
 The use case we'll be optimizing for is the fast consumption and
 acknowledgement of jobs by workers. Disque is built for many small jobs, so it
@@ -62,7 +62,7 @@ pretend we have a worker program that follows (roughly) these steps.
 We're already doing the work in literally no time, so now we want to trim the
 fat from our Disque client so we can process more jobs.
 
-### first_script.py
+### benchmarking_script.py
 ```python
 from disq import Disque
 @profile
@@ -105,7 +105,7 @@ retrieving one. We need to add the `@profile` decorator to the `getjob`
 function in the disq client.py. This turns out to be uninformative because
 getjob just calls `self._getjob`.
 
-## Digging Deeper
+## Interactive Profiling for Python
 
 We could continue decorating each level and viewing the results; instead let's
 try a different tool. There's an [interactive profiler][profiling] for Python
@@ -167,7 +167,7 @@ _Without connection counting_
 Without job source counting, the total runtime decreases from 3.87 to 2.88
 seconds. This is definitely worth a change to the library's default behavior.
 
-### Optimizing RollingCounter
+### Speeding Up RollingCounter
 
 Now let's try to improve connection counting for users that *do* want it.
 Here's a starting point (courtesy of lineprof).
@@ -195,7 +195,7 @@ ever going to increase, so we can safely change to an unsorted list and use
 `append` to skip the cost of sorting values.
 
 Switching from `blist.sortedlist` to `list` only required 3 changed lines,
-here's the commit (TODO: LINK) that made the change.
+here's the [commit][blistswitch] that made the change.
 
 ```
 File: counting_profiler.py
@@ -214,19 +214,19 @@ Line num    Hits         Time  Per Hit   % Time  Line Contents
 ```
 
 After switching to `list`, the `add` function is 30 times faster, an enormous
-savings. Even better, switching to Python's stdlib `bisect` (TODO: LINK)
+savings. Even better, switching to Python's stdlib [bisect][bisect]
 function cut the time it takes to find the most frequent node by 75 percent.
 
-## Performance in Practice
+## Python Performance in Practice
 
 Building performant systems is hard work. Duh: that's why there are so many
 systems that *aren't* performant. The first step to improving your system is to
 have measurements in place that are easy to test between changes. For my
-projects, I use tox (TODO LINK) as a test runner because it provides the
-flexibility to define any environments you need -- not just
-unittest/py.test/nose commands. 
+projects, I use [tox](https://testrun.org/tox/latest/) as a test runner because
+it provides the flexibility to define any environments you need -- not just
+unittest/py.test/nose commands.
 
-To track performance, I use pytest-bench (TODO:LINK) and a tox benchmarking
+To track performance, I use [pytest-bench][pytestbench] in a tox benchmarking
 environment that's as simple as `tox -ebenchmark` and spits out the results for
 several test workloads. The tox.ini file below is excerpted, and available in
 full [here][toxini].
@@ -283,7 +283,7 @@ list, and now use the stdlib bisect function. And now we can see when
 performance regresses for new changes, since benchmarks are a part of test
 runs.
 
-## Lessons Learned
+## Optimization Lessons
 
 Any application (Python or not) can benefit from the
 verify-measure-alter-repeat pattern we used to improve the performance of disq
@@ -309,3 +309,6 @@ able to guide us to it.
 [jython]: http://www.jython.org/index.html
 [pypy]: http://pypy.org/
 [toxini]: https://github.com/ryansb/disq/blob/master/tox.ini
+[pytestbench]: https://pytest-benchmark.readthedocs.org/en/latest/
+[blistswitch]: https://github.com/ryansb/disq/commit/ce6fab14b6ac5ebcaeafc3dbad71517ab96446bd
+[bisect]: https://docs.python.org/2/library/bisect.html
