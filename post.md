@@ -167,7 +167,7 @@ _Without connection counting_
 Without job source counting, the total runtime decreases from 3.87 to 2.88
 seconds. This is definitely worth a change to the library's default behavior.
 
-## Optimizing RollingCounter
+### Optimizing RollingCounter
 
 Now let's try to improve connection counting for users that *do* want it.
 Here's a starting point (courtesy of lineprof).
