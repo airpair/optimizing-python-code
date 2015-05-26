@@ -62,8 +62,8 @@ pretend we have a worker program that follows (roughly) these steps.
 We're already doing the work in literally no time, so now we want to trim the
 fat from our Disque client so we can process more jobs.
 
+### first_script.py
 ```python
-# first_script.py
 from disq import Disque
 @profile
 def read_jobs():
@@ -72,7 +72,7 @@ def read_jobs():
         job = client.getjob('q', timeout_ms=1)
         if job is None:
             break
-        # normally you'd do work here
+        """normally you'd do work here"""
         client.ackjob(job[1])
 ```
 
@@ -82,13 +82,13 @@ Lineprof provides the `kernprof` command that will collect information about
 the code.
 
 ```
-# -l forces line-by-line profiling
-# -v prints the results of the profiling immediately
+// -l forces line-by-line profiling
+// -v prints the results of the profiling immediately
 $ kernprof -l -v first_script.py
 Timer unit: 1e-06 s (microsecond)
 Function: read_jobs
 
-Line #      Hits         Time  Per Hit   % Time  Line Contents
+Line num    Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
      5                                           @profile
      6                                           def read_jobs():
@@ -97,7 +97,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
      9      1001       530698    530.2     65.6          job = client.getjob('q', timeout_ms=1)
     10      1001         1282      1.3      0.2          if job is None:
     11         1            2      2.0      0.0              break
-    12                                                   # normally you'd do work here
+    12                                                   // normally you'd do work here
     13      1000       273414    273.4     33.8          client.ackjob(job[1])
 ```
 
@@ -121,12 +121,13 @@ action, just pulling a connection to use from the pool.
 That time is being spent in this snippet of `rolling_counter` (full code
 available [here][rollingcount]).
 
-```
-def _expire(self):  # called when a connection is retrieved
-    # cast key iterable to list because this loop can delete keys
+```python
+def _expire(self)
+    """ called when a connection is retrieved """
+    """ cast key iterable to list because this loop can delete keys"""
     for k in list(six.iterkeys(self._counts)):
-        # find the location where all times are less than (current - ttl)
-        # and delete all lesser elements
+        """ find the location where all times are less than (current - ttl)
+        and delete all lesser elements """
         del self._counts[k][
             :self._counts[k].bisect(time.time() - self._ttl_seconds)
         ]
@@ -176,11 +177,11 @@ Here's a starting point (courtesy of lineprof).
 File: counting_profiler.py
 Function: count_incoming at line 7
 
-Line #      Hits         Time  Per Hit   % Time  Line Contents
+Line num    Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
      7                                           @profile
      8                                           def count_incoming():
-     9                                               # Set the count lifetime really low
+     9                                               // Set the count lifetime really low
     10         1           11     11.0      0.0      rc = RollingCounter(ttl_secs=0.1)
     11     10001        10424      1.0      2.5      for i, _ in izip(cycle('1234567890'), xrange(10000)):
     12     10000       306433     30.6     73.4          rc.add(i)
@@ -202,11 +203,11 @@ here's the commit (TODO: LINK) that made the change.
 File: counting_profiler.py
 Function: count_incoming at line 7
 
-Line #      Hits         Time  Per Hit   % Time  Line Contents
+Line num    Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
      7                                           @profile
      8                                           def count_incoming():
-     9                                               # Set the count lifetime really low
+     9                                               // Set the count lifetime really low
     10         1           11     11.0      0.0      rc = RollingCounter(ttl_secs=0.1)
     11     10001         8098      0.8      6.3      for i, _ in izip(cycle('1234567890'), xrange(10000)):
     12     10000        18626      1.9     14.6          rc.add(i)
@@ -235,7 +236,7 @@ full [here][toxini].
 
 ```
 [testenv]
-# exit after 2 failures, report fail info, log the 3 slowest tests, display test coverage within the module
+// exit after 2 failures, report fail info, log the 3 slowest tests, display test coverage within the module
 commands = py.test --maxfail=2 -rf --durations=3
            --cov disq
            --cov-report html
@@ -247,11 +248,11 @@ deps = -r{toxinidir}/requirements.txt
        -r{toxinidir}/test-requirements.txt
 
 [testenv:benchmark]
-# benchmarking environment that skips all non-benchmark tests
+// benchmarking environment that skips all non-benchmark tests
 commands = py.test -rf --benchmark-only {posargs}
 
 [testenv:pep8]
-# PEP8 environment that forces me to have consistent style
+// PEP8 environment that forces me to have consistent style
 commands = pep8
 setenv = VIRTUAL_ENV={envdir}
          PYTHONHASHSEED=0
@@ -261,7 +262,7 @@ The output of a benchmark run is simple enough, compare these two results from
 before and after the changes discussed here.
 
 ```
-# Before
+### Before
 --- benchmark: 4 tests, min 5 rounds (of min 25.00us), 1.00s max time --
 Name (time in us)                      Min        Max      Mean   StdDev
 ------------------------------------------------------------------------
@@ -271,7 +272,7 @@ test_addjob_async_bench            42.9153  1088.8577   51.9152  12.2333
 test_getjob_bench                  79.8702   191.9270   92.0623   9.3458
 ------------------------------------------------------------------------
 
-# After
+### After
 --- benchmark: 4 tests, min 5 rounds (of min 25.00us), 1.00s max time --
 Name (time in us)                      Min       Max      Mean    StdDev
 ------------------------------------------------------------------------
