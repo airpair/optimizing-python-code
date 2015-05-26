@@ -265,22 +265,20 @@ before and after the changes discussed here.
 ### Before
 --- benchmark: 4 tests, min 5 rounds (of min 25.00us), 1.00s max time --
 Name (time in us)                      Min        Max      Mean   StdDev
-------------------------------------------------------------------------
+
 test_addjob_benchmarks             72.0024   323.0572  103.5393  16.0487
 test_addjob_no_replicate_bench     40.7696   173.0919   45.2473   7.1136
 test_addjob_async_bench            42.9153  1088.8577   51.9152  12.2333
 test_getjob_bench                  79.8702   191.9270   92.0623   9.3458
-------------------------------------------------------------------------
 
 ### After
 --- benchmark: 4 tests, min 5 rounds (of min 25.00us), 1.00s max time --
 Name (time in us)                      Min       Max      Mean    StdDev
-------------------------------------------------------------------------
+
 test_addjob_benchmarks             71.0487  856.8764  103.6685   21.6713
 test_addjob_no_replicate_bench     39.8159  432.0145   45.0144    7.7360
 test_addjob_async_bench            41.0080  276.8040   44.5564    6.9397
 test_getjob_bench                  66.9956  213.1462   73.8683    9.1130
-------------------------------------------------------------------------
 ```
 
 The real savings was in `getjob`, which is where we *were* bisecting the sorted
