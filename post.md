@@ -89,7 +89,6 @@ Timer unit: 1e-06 s (microsecond)
 Function: read_jobs
 
 Line num    Hits         Time  Per Hit   % Time  Line Contents
-==============================================================
      5                                           @profile
      6                                           def read_jobs():
      7         1         2273   2273.0      0.3      client = Disque()
@@ -178,7 +177,6 @@ File: counting_profiler.py
 Function: count_incoming at line 7
 
 Line num    Hits         Time  Per Hit   % Time  Line Contents
-==============================================================
      7                                           @profile
      8                                           def count_incoming():
      9                                               // Set the count lifetime really low
@@ -204,7 +202,6 @@ File: counting_profiler.py
 Function: count_incoming at line 7
 
 Line num    Hits         Time  Per Hit   % Time  Line Contents
-==============================================================
      7                                           @profile
      8                                           def count_incoming():
      9                                               // Set the count lifetime really low
@@ -262,7 +259,7 @@ The output of a benchmark run is simple enough, compare these two results from
 before and after the changes discussed here.
 
 ```
-### Before
+## Before
 --- benchmark: 4 tests, min 5 rounds (of min 25.00us), 1.00s max time --
 Name (time in us)                      Min        Max      Mean   StdDev
 
@@ -271,7 +268,7 @@ test_addjob_no_replicate_bench     40.7696   173.0919   45.2473   7.1136
 test_addjob_async_bench            42.9153  1088.8577   51.9152  12.2333
 test_getjob_bench                  79.8702   191.9270   92.0623   9.3458
 
-### After
+## After
 --- benchmark: 4 tests, min 5 rounds (of min 25.00us), 1.00s max time --
 Name (time in us)                      Min       Max      Mean    StdDev
 
