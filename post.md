@@ -299,7 +299,7 @@ code that does as little work as possible. The disq library turned out to be
 spending huge amounts of time doing unnecessary work, and our profilers were
 able to guide us to it.
 
-
+[mvp]: https://en.wikipedia.org/wiki/Minimum_viable_product
 [docs]: https://github.com/antirez/disque#client-libraries
 [disque]: https://github.com/antirez/disque
 [disq]: https://github.com/ryansb/disq
