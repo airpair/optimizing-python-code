@@ -312,3 +312,4 @@ able to guide us to it.
 [pytestbench]: https://pytest-benchmark.readthedocs.org/en/latest/
 [blistswitch]: https://github.com/ryansb/disq/commit/ce6fab14b6ac5ebcaeafc3dbad71517ab96446bd
 [bisect]: https://docs.python.org/2/library/bisect.html
+[mvp]: https://en.wikipedia.org/wiki/Minimum_viable_product
